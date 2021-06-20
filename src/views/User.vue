@@ -4,17 +4,22 @@
       <!-- UserProfileCard -->
       <UserProfileCard :profile="profile" />
 
-      <!-- UserFollowingsCard -->
-      <UserFollowingsCard />
+      <div class="row">
+        <div class="col-md-4">
+          <!-- UserFollowingsCard -->
+          <UserFollowingsCard :followings="followings" />
+          <br>
+          <!-- UserFollowersCard -->
+          <UserFollowersCard />
+        </div>
+        <div class="col-md-8">
+          <!-- UserCommentsCard -->
+          <UserCommentsCard />
 
-      <!-- UserFollowersCard -->
-      <UserFollowersCard />
-
-      <!-- UserCommentsCard -->
-      <UserCommentsCard />
-
-      <!-- UserFavoritedRestaurantsCard -->
-      <UserFavoritedRestaurantsCard />
+          <!-- UserFavoritedRestaurantsCard -->
+          <UserFavoritedRestaurantsCard />
+        </div>
+      </div>
     </div>
   </div>
 </template>
