@@ -14,10 +14,10 @@
         </div>
         <div class="col-md-8">
           <!-- UserCommentsCard -->
-          <UserCommentsCard />
+          <UserCommentsCard :comments="comments" />
 
           <!-- UserFavoritedRestaurantsCard -->
-          <UserFavoritedRestaurantsCard />
+          <UserFavoritedRestaurantsCard :favorited-restaurants="favoritedRestaurants" />
         </div>
       </div>
     </div>
@@ -1234,6 +1234,7 @@ export default {
       this.followers = Followers
       this.followings = Followings
       this.profile = dummyData.profile
+      console.log(this.favoritedRestaurants)
     }
   }
 }
