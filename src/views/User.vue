@@ -2,7 +2,10 @@
   <div class="album py-5 bg-light">
     <div class="container">
       <!-- UserProfileCard -->
-      <UserProfileCard :profile="profile" />
+      <UserProfileCard
+        :user-profile="userProfile"
+        :initial-is-followed="isFollowed"
+      />
 
       <div class="row">
         <div class="col-md-4">
@@ -37,7 +40,7 @@ const dummyData = {
     name: 'root',
     email: 'root@example.com',
     password: '$2a$10$OJ3jR93XlEMrQtYMWOIQh.EINWgaRFTXkd0Xi5OC/Vz4maztUXEPe',
-    isAdmin: true,
+    isAdmin: false,
     image: 'https://i.imgur.com/58ImzMM.png',
     createdAt: '2019-07-30T16:24:54.983Z',
     updatedAt: '2019-08-01T10:33:51.095Z',
@@ -1216,11 +1219,12 @@ export default {
   },
   data () {
     return {
-      profile: [],
+      userProfile: [],
       comments: [],
       favoritedRestaurants: [],
       followers: [],
-      followings: []
+      followings: [],
+      isFollowed: true
     }
   },
   created () {
@@ -1233,8 +1237,8 @@ export default {
       this.favoritedRestaurants = FavoritedRestaurants
       this.followers = Followers
       this.followings = Followings
-      this.profile = dummyData.profile
-      console.log(this.favoritedRestaurants)
+      this.userProfile = dummyData.profile
+      this.isFollowed = dummyData.isFollowed
     }
   }
 }

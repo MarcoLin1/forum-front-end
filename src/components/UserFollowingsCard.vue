@@ -14,7 +14,7 @@
           :src="follow.image"
           alt=""
           style="width:60px; height:60px;"
-          class="avatar"
+          class="avatar mr-2"
         >
       </router-link>
     </div>

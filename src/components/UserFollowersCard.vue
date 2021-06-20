@@ -5,17 +5,18 @@
       " followers(追隨者)"
     </div>
     <div class="card-body">
-      <a
+      <router-link
         v-for="follow in follower"
         :key="follow.id"
-        href=""
+        :to="{name: 'user-profile', params: {id: follow.id}}"
       >
         <img
           :src="follow.image"
           alt=""
           style="width:60px; height:60px;"
+          class="mr-2"
         >
-      </a>
+      </router-link>
     </div>
   </div>
 </template>

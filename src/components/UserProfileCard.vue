@@ -3,7 +3,7 @@
     <div class="row no-gutters">
       <div class="col-md-4">
         <img
-          :src="profile.image"
+          :src="userProfile.image"
           alt=""
           style="width:300px; height:300px;"
         >
@@ -11,37 +11,58 @@
       <div class="col-md-8">
         <div class="card-body">
           <h5 class="card-title">
-            {{ profile.name }}
+            {{ userProfile.name }}
           </h5>
           <p class="card-text">
-            {{ profile.email }}
+            {{ userProfile.email }}
           </p>
           <ul class="list-unstyled list-inline">
             <li>
-              <strong>{{ profile.Comments.length }}</strong>
+              <strong>{{ userProfile.Comments.length }}</strong>
               " 已評論過餐廳"
             </li>
             <li>
-              <strong>{{ profile.FavoritedRestaurants.length }}</strong>
+              <strong>{{ userProfile.FavoritedRestaurants.length }}</strong>
               " 收藏的餐廳"
             </li>
             <li>
-              <strong>{{ profile.Followings.length }}</strong>
+              <strong>{{ userProfile.Followings.length }}</strong>
               "  followings (追蹤者)"
             </li>
             <li>
-              <strong>{{ profile.Followers.length }}</strong>
+              <strong>{{ userProfile.Followers.length }}</strong>
               "  followers (追隨者)"
             </li>
           </ul>
-          <p>
-            <a href="">
+          <template>
+            <a
+              v-if="userProfile.isAdmin"
+              href=""
+            >
               <button
                 type="submit"
                 class="btn btn-primary"
               >edit</button>
             </a>
-          </p>
+            <template v-else>
+              <button
+                v-if="isFollowed"
+                type="submit"
+                class="btn btn-info"
+                @click.prevent="addFollowing"
+              >
+                追蹤
+              </button>
+              <button
+                v-else
+                type="submit"
+                class="btn btn-danger"
+                @click="deleteFollowing"
+              >
+                取消追蹤
+              </button>
+            </template>
+          </template>
         </div>
       </div>
     </div>
@@ -50,10 +71,28 @@
 
 <script>
 export default {
+  name: 'UserProfileCard',
   props: {
-    profile: {
+    userProfile: {
       type: Object,
       required: true
+    },
+    initialIsFollowed: {
+      type: Boolean,
+      required: true
+    }
+  },
+  data () {
+    return {
+      isFollowed: this.initialIsFollowed
+    }
+  },
+  methods: {
+    addFollowing () {
+      this.isFollowed = false
+    },
+    deleteFollowing () {
+      this.isFollowed = true
     }
   }
 }

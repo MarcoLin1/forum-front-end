@@ -5,17 +5,18 @@
       " 已評論餐廳 "
     </div>
     <div class="card-body">
-      <a
+      <router-link
         v-for="comment in allComments"
         :key="comment.id"
-        href=""
+        :to="{name: 'restaurant', params: {id: comment.id}}"
       >
         <img
           :src="comment.Restaurant.image"
           alt=""
           style="width:60px;height:60px;"
+          class="avatar mr-2"
         >
-      </a>
+      </router-link>
     </div>
   </div>
 </template>
