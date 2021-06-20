@@ -34,7 +34,7 @@
 
         <!-- is user is login -->
         <router-link
-          to="#"
+          :to="{name: 'user-profile'}"
           class="text-white mr-3"
         >
           使用者 您好
