@@ -52,7 +52,7 @@
 export default {
   props: {
     profile: {
-      type: Array,
+      type: Object,
       required: true
     }
   }
