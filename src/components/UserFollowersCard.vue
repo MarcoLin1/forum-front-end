@@ -11,7 +11,7 @@
         :to="{name: 'user-profile', params: {id: follow.id}}"
       >
         <img
-          :src="follow.image"
+          :src="follow.image | emptyImage"
           alt=""
           style="width:60px; height:60px;"
           class="mr-2"
@@ -22,7 +22,9 @@
 </template>
 
 <script>
+import { emptyImageFilter } from './../utils/mixin'
 export default {
+  mixins: [emptyImageFilter],
   props: {
     followers: {
       type: Array,

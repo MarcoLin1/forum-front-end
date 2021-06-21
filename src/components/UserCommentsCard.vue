@@ -11,7 +11,7 @@
         :to="{name: 'restaurant', params: {id: comment.id}}"
       >
         <img
-          :src="comment.Restaurant.image"
+          :src="comment.Restaurant.image | emptyImage"
           alt=""
           style="width:60px;height:60px;"
           class="avatar mr-2"
@@ -22,7 +22,9 @@
 </template>
 
 <script>
+import { emptyImageFilter } from './../utils/mixin'
 export default {
+  mixins: [emptyImageFilter],
   props: {
     comments: {
       type: Array,

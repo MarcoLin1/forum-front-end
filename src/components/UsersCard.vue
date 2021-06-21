@@ -4,7 +4,7 @@
   >
     <a href="#">
       <img
-        :src="user.image"
+        :src="user.image | emptyImage"
         width="140px"
         height="140px"
       >
@@ -33,7 +33,9 @@
 </template>
 
 <script>
+import { emptyImageFilter } from './../utils/mixin'
 export default {
+  mixins: [emptyImageFilter],
   props: {
     initialUser: {
       type: Object,

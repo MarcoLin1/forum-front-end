@@ -3,7 +3,7 @@
     <div class="row no-gutters">
       <div class="col-md-4">
         <img
-          :src="userProfile.image"
+          :src="userProfile.image | emptyImage"
           alt=""
           style="width:300px; height:300px;"
         >
@@ -70,8 +70,10 @@
 </template>
 
 <script>
+import { emptyImageFilter } from './../utils/mixin'
 export default {
   name: 'UserProfileCard',
+  mixins: [emptyImageFilter],
   props: {
     userProfile: {
       type: Object,
