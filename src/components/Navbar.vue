@@ -26,7 +26,7 @@
       <div class="ml-auto d-flex align-items-center">
         <!-- is user is admin -->
         <router-link
-          to="#"
+          to="/admin/restaurants"
           class="text-white mr-3"
         >
           管理員後台
