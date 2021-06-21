@@ -168,6 +168,20 @@ const dummyData = {
 }
 export default {
   name: 'AdminRestaurantForm',
+  props: {
+    initialRestaurant: {
+      type: Object,
+      default: () => ({
+        name: '',
+        categoryId: '',
+        tel: '',
+        address: '',
+        openingHours: '',
+        description: '',
+        image: ''
+      })
+    }
+  },
   data () {
     return {
       categories: [],
@@ -185,6 +199,10 @@ export default {
   },
   created () {
     this.fetchRestaurant()
+    this.restaurant = {
+      ...this.restaurant,
+      ...this.initialRestaurant
+    }
   },
   methods: {
     fetchRestaurant () {

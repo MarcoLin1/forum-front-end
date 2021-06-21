@@ -1,7 +1,7 @@
 <template>
   <div class="mb-3">
     <h1>餐廳後台</h1>
-    <router-link :to="{name: 'admin-restaurants'}">
+    <router-link to="/admin/restaurants">
       Restaurants
     </router-link> |
     <a href="#">Categories</a> |
