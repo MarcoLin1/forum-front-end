@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form @submit.stop.prevent="handleSubmit">
     <div class="form-group">
       <label for="name">Name</label>
       <input
@@ -86,6 +86,13 @@
     </div>
 
     <div class="form-group">
+      <img
+        v-if="restaurant.image"
+        :src="restaurant.image"
+        width="200"
+        height="200"
+        class="d-block img-thumbnail mb-3"
+      >
       <label for="image">Image</label>
       <input
         id="image"
@@ -93,6 +100,7 @@
         name="image"
         accept="image/*"
         class="form-control-file"
+        @change="handleFileChange"
       >
     </div>
 
@@ -181,6 +189,22 @@ export default {
   methods: {
     fetchRestaurant () {
       this.categories = dummyData.categories
+    },
+    handleFileChange (e) {
+      const files = e.target.files
+      // 因為只存一個檔案，所以長度是1，若是0的話代表沒有上傳
+      if (files.length === 0) {
+        this.restaurant.image = ''
+      } else {
+        // 為本機檔案產生暫存的URL
+        const imageURL = window.URL.createObjectURL(files[0])
+        this.restaurant.image = imageURL
+      }
+    },
+    handleSubmit (e) {
+      const form = e.target
+      const formData = new FormData(form)
+      this.$emit('after-submit', formData)
     }
   }
 }
