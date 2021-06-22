@@ -35,15 +35,18 @@
             </li>
           </ul>
           <template>
-            <a
+            <router-link
               v-if="userProfile.isAdmin"
-              href=""
+              :to="{name: 'user-profile-edit', params: {id: personalProfile.id}}"
+              :personal-profile="personalProfile"
             >
               <button
                 type="submit"
                 class="btn btn-primary"
-              >edit</button>
-            </a>
+              >
+                edit
+              </button>
+            </router-link>
             <template v-else>
               <button
                 v-if="isFollowed"
@@ -86,6 +89,7 @@ export default {
   },
   data () {
     return {
+      personalProfile: this.userProfile,
       isFollowed: this.initialIsFollowed
     }
   },
