@@ -53,14 +53,39 @@
             {{ category.id }}
           </th>
           <td class="position-relative">
-            <div class="category-name">
+            <input
+              v-show="category.isEditing"
+              v-model="category.name"
+              type="text"
+              class="form-control"
+            >
+            <span
+              v-show="category.isEditing"
+              class="cancel"
+              @click.stop.prevent="handleCancel(category.id)"
+            >X
+            </span>
+            <div
+              v-show="!category.isEditing"
+              class="category-name"
+            >
               {{ category.name }}
             </div>
           </td>
           <td class="d-flex justify-content-between">
             <button
+              v-show="category.isEditing"
               type="button"
               class="btn btn-link mr-2"
+              @click.stop.prevent="updateCategory({categoryId: category.id, name: category.name})"
+            >
+              Save
+            </button>
+            <button
+              v-show="!category.isEditing"
+              type="button"
+              class="btn btn-link mr-2"
+              @click.stop.prevent="toggleIsEditing(category.id)"
             >
               Edit
             </button>
@@ -148,7 +173,14 @@ export default {
   },
   methods: {
     fetchCategories () {
-      this.categories = dummyData.categories
+      // 在每一筆category中增加一個isEditing屬性
+      this.categories = dummyData.categories.map(category => {
+        return {
+          ...category,
+          isEditing: false,
+          nameCached: ''
+        }
+      })
     },
     createCategory () {
       // Todo: 透過api告知伺服器要新增的餐廳類別...
@@ -165,7 +197,70 @@ export default {
 
       // 將該餐廳類別從陣列中刪除
       this.categories = this.categories.filter(category => category.id !== categoryId)
+    },
+    toggleIsEditing (categoryId) {
+      this.categories = this.categories.map(category => {
+        if (category.id === categoryId) {
+          return {
+            ...category,
+            // 切換isEditing狀態
+            isEditing: !category.isEditing,
+            // 複製一份原本的category name
+            nameCached: category.name
+          }
+        }
+        return category
+      })
+    },
+    updateCategory ({ categoryId, name }) {
+      // Todo: 透過api向伺服器要求更新餐廳類別
+
+      // 切換isEditing狀態
+      this.toggleIsEditing(categoryId)
+    },
+    handleCancel (categoryId) {
+      this.categories = this.categories.map(category => {
+        if (category.id === categoryId) {
+          return {
+            ...category,
+            // 將category name換回一開始暫存的nameCached
+            name: category.nameCached
+          }
+        }
+        return category
+      })
+      this.toggleIsEditing(categoryId)
     }
   }
 }
 </script>
+
+<style scoped>
+.category-name {
+  padding: 0.375rem 0.75rem;
+  border: 1px solid transparent;
+  outline: 0;
+  cursor: auto;
+}
+
+.btn-link {
+  width: 62px;
+}
+
+.cancel {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 25px;
+  height: 25px;
+  border: 1px solid #aaaaaa;
+  border-radius: 50%;
+  user-select: none;
+  cursor: pointer;
+  font-size: 12px;
+}
+</style>
