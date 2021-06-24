@@ -38,7 +38,6 @@
             <router-link
               v-if="userProfile.isAdmin"
               :to="{name: 'user-profile-edit', params: {id: personalProfile.id}}"
-              :personal-profile="personalProfile"
             >
               <button
                 type="submit"
