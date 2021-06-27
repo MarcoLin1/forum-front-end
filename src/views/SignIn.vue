@@ -42,6 +42,7 @@
       <button
         class="btn btn-lg btn-primary btn-block mb-3"
         type="submit"
+        :disabled="isProcessing"
       >
         Submit
       </button>
@@ -68,26 +69,29 @@ export default {
   data () {
     return {
       email: '',
-      password: ''
+      password: '',
+      isProcessing: false
     }
   },
   methods: {
     handleSubmit () {
+      // 如果email或password為空，就使用Toast提示，然後return不繼續執行
+      if (!this.email || !this.password) {
+        Toast.fire({
+          icon: 'error',
+          title: '請輸入email和password'
+        })
+        return
+      }
+
+      this.isProcessing = true
+
       authorizationAPI.signIn({
         email: this.email,
         password: this.password
       }).then(response => {
         // 取得api請求後的資料
         const { data } = response
-
-        // 如果email或password為空，就使用Toast提示，然後return不繼續執行
-        if (!this.email || !this.password) {
-          Toast.fire({
-            icon: 'error',
-            title: '請輸入email和password'
-          })
-          return
-        }
 
         // 將token存放localStorage
         localStorage.setItem('token', data.token)
@@ -96,6 +100,7 @@ export default {
         this.$router.push('/restaurants')
       }).catch(error => {
         this.password = ''
+        this.isProcessing = false
         Toast.fire({
           icon: 'warning',
           title: '請確認帳號密碼'
