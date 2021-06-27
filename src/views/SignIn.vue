@@ -62,6 +62,8 @@
 </template>
 
 <script>
+import authorizationAPI from './../apis/authorization'
+import { Toast } from './../utils/helper'
 export default {
   data () {
     return {
@@ -71,11 +73,35 @@ export default {
   },
   methods: {
     handleSubmit () {
-      const data = JSON.stringify({
+      authorizationAPI.signIn({
         email: this.email,
-        password: this.passwrod
+        password: this.password
+      }).then(response => {
+        // 取得api請求後的資料
+        const { data } = response
+
+        // 如果email或password為空，就使用Toast提示，然後return不繼續執行
+        if (!this.email || !this.password) {
+          Toast.fire({
+            icon: 'error',
+            title: '請輸入email和password'
+          })
+          return
+        }
+
+        // 將token存放localStorage
+        localStorage.setItem('token', data.token)
+
+        // 成功登入後轉址到餐廳首頁
+        this.$router.push('/restaurants')
+      }).catch(error => {
+        this.password = ''
+        Toast.fire({
+          icon: 'warning',
+          title: '請確認帳號密碼'
+        })
+        console.log('error:', error)
       })
-      console.log('data:', data)
     }
   }
 }
