@@ -92,7 +92,6 @@ export default {
           email: this.email,
           password: this.password
         })
-        console.log(userData)
 
         // 將取得的資料中的token存入localStorage中，最後再redirect到restaurants首頁
         const { data } = userData
