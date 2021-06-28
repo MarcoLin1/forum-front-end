@@ -77,7 +77,7 @@ export default {
   methods: {
     async addFavorite (restaurantId) {
       try {
-        const { data } = await userAPI.addFavorite(restaurantId)
+        const { data } = await userAPI.addFavorite({ restaurantId })
         console.log(data)
         if (data.status !== 'success') {
           throw new Error(data.message)
@@ -96,7 +96,7 @@ export default {
     },
     async deleteFavorite (restaurantId) {
       try {
-        const { data } = await userAPI.deleteFavorite(restaurantId)
+        const { data } = await userAPI.deleteFavorite({ restaurantId })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
@@ -114,7 +114,7 @@ export default {
     },
     async addLike (restaurantId) {
       try {
-        const { data } = await userAPI.addLike(restaurantId)
+        const { data } = await userAPI.addLike({ restaurantId })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
@@ -132,7 +132,7 @@ export default {
     },
     async deleteLike (restaurantId) {
       try {
-        const { data } = await userAPI.deleteLike(restaurantId)
+        const { data } = await userAPI.deleteLike({ restaurantId })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
