@@ -74,39 +74,41 @@ export default {
     }
   },
   methods: {
-    handleSubmit () {
-      // 如果email或password為空，就使用Toast提示，然後return不繼續執行
-      if (!this.email || !this.password) {
-        Toast.fire({
-          icon: 'error',
-          title: '請輸入email和password'
+    async handleSubmit () {
+      try {
+        // 如果email or password 未輸入,就發出提醒並return
+        if (!this.email || !this.password) {
+          Toast.fire({
+            icon: 'warning',
+            title: '請輸入email和password'
+          })
+          return
+        }
+        // 當都有填，將button轉成disabled，避免重複點擊
+        this.isProcessing = true
+
+        // 透過authorizationAPI中的signIn取得輸入的email和password，然後送request給伺服器
+        const userData = await authorizationAPI.signIn({
+          email: this.email,
+          password: this.password
         })
-        return
-      }
+        console.log(userData)
 
-      this.isProcessing = true
-
-      authorizationAPI.signIn({
-        email: this.email,
-        password: this.password
-      }).then(response => {
-        // 取得api請求後的資料
-        const { data } = response
-
-        // 將token存放localStorage
+        // 將取得的資料中的token存入localStorage中，最後再redirect到restaurants首頁
+        const { data } = userData
         localStorage.setItem('token', data.token)
-
-        // 成功登入後轉址到餐廳首頁
         this.$router.push('/restaurants')
-      }).catch(error => {
+      } catch (e) {
+        // 當錯誤時，將password欄位清空，並將button的disabled取消
+        // 並用toast提醒錯誤原因
         this.password = ''
         this.isProcessing = false
         Toast.fire({
           icon: 'warning',
-          title: '請確認帳號密碼'
+          title: '請確認email或password'
         })
-        console.log('error:', error)
-      })
+        console.log(e)
+      }
     }
   }
 }
