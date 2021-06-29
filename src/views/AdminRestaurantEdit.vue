@@ -9,28 +9,8 @@
 
 <script>
 import AdminRestaurantForm from './../components/AdminRestaurantForm.vue'
-
-const dummyData = {
-  restaurant: {
-    id: 1,
-    name: 'Keely BogisichDa',
-    tel: '119.568.4472 x714',
-    address: '9991 Dorothy Canyon',
-    opening_hours: '08:00',
-    description: 'Beatae et sit aut velit sed minus esse est est. Cupiditate quod ut impedit ipsa repudiandae dicta blanditiis dignissimos consequuntur. Illum minima explicabo animi nostrum recusandae voluptatum fugit. Sunt impedit praesentium atque. Itaque doloribus minima provident unde odit quod iste et.',
-    image: 'https://loremflickr.com/320/240/restaurant,food/?random=43.31238337743435',
-    viewCounts: 30,
-    createdAt: '2021-05-17T05:11:05.000Z',
-    updatedAt: '2021-06-20T14:23:30.000Z',
-    CategoryId: 1,
-    Category: {
-      id: 1,
-      name: '中式料理',
-      createdAt: '2021-05-17T05:11:05.000Z',
-      updatedAt: '2021-05-17T05:11:05.000Z'
-    }
-  }
-}
+import adminAPI from './../apis/admin'
+import { Toast } from './../utils/helper'
 
 export default {
   name: 'AdminRestaurantEdit',
@@ -56,19 +36,28 @@ export default {
     this.fetchRestaurant(id)
   },
   methods: {
-    fetchRestaurant (restaurantId) {
-      console.log('fetch restaurantId:', restaurantId)
-      const { restaurant } = dummyData
-      this.restaurant = {
-        ...this.restaurant,
-        id: restaurant.id,
-        name: restaurant.name,
-        tel: restaurant.tel,
-        address: restaurant.address,
-        openingHours: restaurant.opening_hours,
-        description: restaurant.description,
-        image: restaurant.image,
-        categoryId: restaurant.CategoryId
+    async fetchRestaurant (restaurantId) {
+      try {
+        const { data } = await adminAPI.restaurants.getDetail({ restaurantId })
+        console.log(data)
+        const { id, name, tel, address, opening_hours: openingHours, description, image, CategoryId: categoryId } = data.restaurant
+        this.restaurant = {
+          ...this.restaurant,
+          id: id,
+          name: name,
+          tel: tel,
+          address: address,
+          openingHours: openingHours,
+          description: description,
+          image: image,
+          categoryId: categoryId
+        }
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '資料讀取失敗，請稍候再試'
+        })
       }
     },
     handleAfterSubmit (formData) {

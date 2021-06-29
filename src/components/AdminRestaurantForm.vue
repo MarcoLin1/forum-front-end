@@ -159,6 +159,15 @@ export default {
       isLoading: true
     }
   },
+  // 監控來自父層的initialRestaurant資料，當接收到資料後放入restaurant中
+  watch: {
+    initialRestaurant (newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue
+      }
+    }
+  },
   created () {
     this.fetchRestaurant()
     this.restaurant = {
