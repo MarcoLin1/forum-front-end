@@ -8,5 +8,12 @@ export default {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
     }
+  },
+  restaurants: {
+    create ({ formData }) {
+      return apiHelper.post('/admin/restaurants', formData, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      })
+    }
   }
 }
