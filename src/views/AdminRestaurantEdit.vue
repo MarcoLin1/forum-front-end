@@ -2,6 +2,7 @@
   <div class="container py-5">
     <AdminRestaurantForm
       :initial-restaurant="restaurant"
+      :is-processing="isProcessing"
       @after-submit="handleAfterSubmit"
     />
   </div>
@@ -28,8 +29,14 @@ export default {
         description: '',
         image: '',
         categoryId: ''
-      }
+      },
+      isProcessing: false
     }
+  },
+  beforeRouteUpdate (to, from, next) {
+    // 在只改變路由的情況，再呼叫fetchRestaurant抓取要去的餐廳資料
+    this.fetchRestaurant(to.params.id)
+    next()
   },
   created () {
     const { id } = this.$route.params
@@ -60,10 +67,25 @@ export default {
         })
       }
     },
-    handleAfterSubmit (formData) {
-      for (const [name, value] of formData.entries()) {
-        console.log(name + ':' + value)
+    async handleAfterSubmit (formData) {
+      try {
+        this.isProcessing = true
+        const { data } = await adminAPI.restaurants.update({ restaurantId: this.restaurant.id, formData })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.$router.push({ name: 'admin-restaurants' })
+      } catch (e) {
+        this.isProcessing = false
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '餐廳資料修改失敗，請稍候再試'
+        })
       }
+      // for (const [name, value] of formData.entries()) {
+      //   console.log(name + ':' + value)
+      // }
     }
   }
 }
