@@ -105,59 +105,10 @@
 
 <script>
 import AdminNav from './../components/AdminNav.vue'
+import adminAPI from './../apis/admin'
+import { Toast } from './../utils/helper'
 import { v4 as uuid } from 'uuid'
-const dummyData = {
-  categories: [
-    {
-      id: 1,
-      name: '中式料理',
-      createdAt: '2021-05-17T05:11:05.000Z',
-      updatedAt: '2021-05-17T05:11:05.000Z'
-    },
-    {
-      id: 2,
-      name: '日本料理',
-      createdAt: '2021-05-17T05:11:05.000Z',
-      updatedAt: '2021-05-17T05:11:05.000Z'
-    },
-    {
-      id: 3,
-      name: '義大利料理',
-      createdAt: '2021-05-17T05:11:05.000Z',
-      updatedAt: '2021-05-17T05:11:05.000Z'
-    },
-    {
-      id: 4,
-      name: '墨西哥料理',
-      createdAt: '2021-05-17T05:11:05.000Z',
-      updatedAt: '2021-05-17T05:11:05.000Z'
-    },
-    {
-      id: 5,
-      name: '素食料理',
-      createdAt: '2021-05-17T05:11:05.000Z',
-      updatedAt: '2021-05-17T05:11:05.000Z'
-    },
-    {
-      id: 6,
-      name: '美式料理',
-      createdAt: '2021-05-17T05:11:05.000Z',
-      updatedAt: '2021-05-17T05:11:05.000Z'
-    },
-    {
-      id: 7,
-      name: '複合式料理',
-      createdAt: '2021-05-17T05:11:05.000Z',
-      updatedAt: '2021-05-17T05:11:05.000Z'
-    },
-    {
-      id: 11,
-      name: '咒靈料理',
-      createdAt: '2021-05-30T07:40:35.000Z',
-      updatedAt: '2021-05-30T07:40:35.000Z'
-    }
-  ]
-}
+
 export default {
   components: {
     AdminNav: AdminNav
@@ -172,15 +123,23 @@ export default {
     this.fetchCategories()
   },
   methods: {
-    fetchCategories () {
-      // 在每一筆category中增加一個isEditing屬性
-      this.categories = dummyData.categories.map(category => {
-        return {
-          ...category,
-          isEditing: false,
-          nameCached: ''
-        }
-      })
+    async fetchCategories () {
+      try {
+        const { data } = await adminAPI.categories.get()
+        this.categories = data.categories.map(category => {
+          return {
+            ...category,
+            isEditing: false,
+            nameCached: ''
+          }
+        })
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '餐廳類別資料讀取失敗，請稍候再試'
+        })
+      }
     },
     createCategory () {
       // Todo: 透過api告知伺服器要新增的餐廳類別...
