@@ -12,6 +12,11 @@ export default {
       return apiHelper.post('/admin/categories', { name }, {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
+    },
+    delete ({ categoryId }) {
+      return apiHelper.delete(`/admin/categories/${categoryId}`, {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      })
     }
   },
   restaurants: {
