@@ -89,6 +89,15 @@ export default {
       restaurant: this.initialRestaurant
     }
   },
+  // 監控資料，當有變化就隨時更新，若未設定一開始會抓取到data預設值
+  watch: {
+    initialRestaurant (newValue) {
+      this.restaurant = {
+        ...this.restaurant,
+        ...newValue
+      }
+    }
+  },
   methods: {
     addLike () {
       this.restaurant = {
