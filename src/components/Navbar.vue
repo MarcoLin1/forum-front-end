@@ -26,6 +26,7 @@
       <div class="ml-auto d-flex align-items-center">
         <!-- is user is admin -->
         <router-link
+          v-if="currentUser.isAdmin"
           to="/admin/restaurants"
           class="text-white mr-3"
         >
@@ -33,19 +34,37 @@
         </router-link>
 
         <!-- is user is login -->
-        <router-link
-          :to="{name: 'user-profile'}"
-          class="text-white mr-3"
-        >
-          使用者 您好
-        </router-link>
-        <button
-          type="button"
-          class="btn btn-sm btn-outline-success my-2 my-sm-0"
-        >
-          登出
-        </button>
+        <template v-if="isAuthenticated">
+          <router-link
+            :to="{name: 'user-profile', params: {id: currentUser.id}}"
+            class="text-white mr-3"
+          >
+            {{ currentUser.name || '使用者' }} 您好
+          </router-link>
+          <button
+            type="button"
+            class="btn btn-sm btn-outline-success my-2 my-sm-0"
+            @click="logout"
+          >
+            登出
+          </button>
+        </template>
       </div>
     </div>
   </nav>
 </template>
+
+<script>
+import { mapState } from 'vuex'
+export default {
+  computed: {
+    // 將store中多個state資料傳入
+    ...mapState(['currentUser', 'isAuthenticated'])
+  },
+  methods: {
+    logout () {
+      this.$router.push('/signin')
+    }
+  }
+}
+</script>

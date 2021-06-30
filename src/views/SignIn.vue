@@ -96,6 +96,10 @@ export default {
         // 將取得的資料中的token存入localStorage中，最後再redirect到restaurants首頁
         const { data } = userData
         localStorage.setItem('token', data.token)
+
+        // 將資料傳到Vuex中
+        this.$store.commit('setCurrentUser', data.user)
+
         this.$router.push('/restaurants')
       } catch (e) {
         // 當錯誤時，將password欄位清空，並將button的disabled取消
