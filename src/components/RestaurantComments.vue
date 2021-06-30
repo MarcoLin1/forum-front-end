@@ -35,15 +35,7 @@
 <script>
 // 利用mixin將小工具打包，再各別引入
 import { fromNowFilter } from '../utils/mixin'
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: 'root',
-    email: 'root@example.com',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+import { mapState } from 'vuex'
 
 export default {
   mixins: [fromNowFilter],
@@ -53,10 +45,9 @@ export default {
       required: true
     }
   },
-  data () {
-    return {
-      currentUser: dummyUser.currentUser
-    }
+  // 取得vuex中currentUser的資料
+  computed: {
+    ...mapState(['currentUser'])
   },
   methods: {
     handleDeleteButtonClick (commentId) {

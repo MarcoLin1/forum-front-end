@@ -28,7 +28,9 @@
 </template>
 
 <script>
-import { v4 as uuidv4 } from 'uuid'
+import commentAPI from './../apis/comments'
+import { Toast } from './../utils/helper'
+
 export default {
   props: {
     restaurantId: {
@@ -42,16 +44,30 @@ export default {
     }
   },
   methods: {
-    handleSubmit () {
-      // Todo 透過api向伺服器請求一筆comment
-      // commentID
-      this.$emit('after-create-comment', {
-        commentId: uuidv4(), // 尚未串接api，無法取得commentId，暫時用隨機的id
-        text: this.text,
-        restaurantId: this.restaurantId
-      })
-      // 將表單內容清空
-      this.text = ''
+    async handleSubmit () {
+      try {
+        const { data } = await commentAPI.create({ comment: this.text, restaurantId: this.restaurantId })
+        console.log(data)
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        //
+        this.$emit('after-create-comment', {
+          commentId: data.commentId,
+          text: this.text,
+          restaurantId: this.restaurantId
+        })
+
+        // 將表單內容清空
+        this.text = ''
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '新增評論失敗，請稍候再試'
+        })
+      }
     }
   }
 }
