@@ -58,7 +58,7 @@
 import { mapState } from 'vuex'
 export default {
   computed: {
-    // 將store中多個state資料傳入
+    // 將store中多個state資料傳入(可用陣列、物件回傳)
     ...mapState(['currentUser', 'isAuthenticated'])
   },
   methods: {
