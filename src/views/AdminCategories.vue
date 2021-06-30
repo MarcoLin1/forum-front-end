@@ -2,8 +2,9 @@
   <div class="container py-5">
     <!--  AdminNav -->
     <AdminNav />
-
-    <form class="my-4">
+    <form
+      class="my-4"
+    >
       <div class="form-row">
         <div class="col-auto">
           <input
@@ -107,7 +108,6 @@
 import AdminNav from './../components/AdminNav.vue'
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helper'
-import { v4 as uuid } from 'uuid'
 
 export default {
   components: {
@@ -133,6 +133,7 @@ export default {
             nameCached: ''
           }
         })
+        console.log(this.categories)
       } catch (e) {
         console.log(e)
         Toast.fire({
@@ -141,15 +142,26 @@ export default {
         })
       }
     },
-    createCategory () {
-      // Todo: 透過api告知伺服器要新增的餐廳類別...
+    async createCategory () {
+      try {
+        const { data } = await adminAPI.categories.create({ name: this.categoryName })
 
-      // 將新的類別增加到陣列中
-      this.categories.push({
-        id: uuid(),
-        name: this.categoryName
-      })
-      this.categoryName = ''
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        this.categories.push({
+          id: data.categoryId,
+          name: this.categoryName
+        })
+        this.categoryName = ''
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '新增餐廳類別失敗'
+        })
+      }
     },
     deleteCategory (categoryId) {
       // Todo: 透過api告知伺服器要刪除的餐廳類別
