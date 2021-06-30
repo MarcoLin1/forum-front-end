@@ -18,9 +18,10 @@
           <button
             type="button"
             class="btn btn-primary"
+            :disabled="isProcessing"
             @click.stop.prevent="createCategory"
           >
-            新增
+            {{ isProcessing ? '請稍候': '新增' }}
           </button>
         </div>
       </div>
@@ -116,7 +117,8 @@ export default {
   data () {
     return {
       categories: [],
-      categoryName: ''
+      categoryName: '',
+      isProcessing: false
     }
   },
   created () {
@@ -144,6 +146,7 @@ export default {
     },
     async createCategory () {
       try {
+        this.isProcessing = true
         const { data } = await adminAPI.categories.create({ name: this.categoryName })
 
         if (data.status !== 'success') {
@@ -155,7 +158,9 @@ export default {
           name: this.categoryName
         })
         this.categoryName = ''
+        this.isProcessing = false
       } catch (e) {
+        this.isProcessing = false
         console.log(e)
         Toast.fire({
           icon: 'error',
@@ -193,11 +198,23 @@ export default {
         return category
       })
     },
-    updateCategory ({ categoryId, name }) {
-      // Todo: 透過api向伺服器要求更新餐廳類別
+    async updateCategory ({ categoryId, name }) {
+      try {
+        const { data } = await adminAPI.categories.update({ categoryId, name })
 
-      // 切換isEditing狀態
-      this.toggleIsEditing(categoryId)
+        // 切換isEditing狀態
+        this.toggleIsEditing(categoryId)
+
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '更新失敗，請稍候再試'
+        })
+      }
     },
     handleCancel (categoryId) {
       this.categories = this.categories.map(category => {
