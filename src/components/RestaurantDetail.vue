@@ -58,7 +58,7 @@
         v-if="restaurant.isLiked"
         type="button"
         class="btn btn-danger like mr-2"
-        @click.stop.prevent="removeLike"
+        @click.stop.prevent="removeLike(restaurant.id)"
       >
         Unlike
       </button>
@@ -119,10 +119,22 @@ export default {
         })
       }
     },
-    removeLike () {
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: false
+    async removeLike (restaurantId) {
+      try {
+        const { data } = await userAPI.deleteLike({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = {
+          ...this.restaurant,
+          isLiked: false
+        }
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '取消Like失敗，請稍候再試'
+        })
       }
     },
     addFavorite () {
