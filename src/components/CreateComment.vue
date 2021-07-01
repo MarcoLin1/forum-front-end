@@ -46,7 +46,7 @@ export default {
   methods: {
     async handleSubmit () {
       try {
-        const { data } = await commentAPI.create({ comment: this.text, restaurantId: this.restaurantId })
+        const { data } = await commentAPI.create({ text: this.text, restaurantId: this.restaurantId })
         console.log(data)
         if (data.status !== 'success') {
           throw new Error(data.message)
