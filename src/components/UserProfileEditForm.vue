@@ -36,13 +36,16 @@
     <button
       type="submit"
       class="btn btn-primary"
+      :disabled="isProcessing"
     >
-      Submit
+      {{ isProcessing ? '處理中': 'Submit' }}
     </button>
   </form>
 </template>
 
 <script>
+import userAPI from './../apis/users'
+import { Toast } from './../utils/helper'
 export default {
   props: {
     initialProfile: {
@@ -63,7 +66,8 @@ export default {
         image: '',
         email: '',
         isAdmin: ''
-      }
+      },
+      isProcessing: false
     }
   },
   created () {
@@ -83,12 +87,37 @@ export default {
         this.profile.image = imageURL
       }
     },
-    // form轉成formData，準備傳送到後端or向父層傳送
-    handleSubmit (e) {
-      const form = e.target
-      const formData = new FormData(form)
-      for (const [name, value] of formData.entries()) {
-        console.log(name + ':' + value)
+    async handleSubmit (e) {
+      try {
+        // 避免姓名欄位空白
+        if (!this.profile.name) {
+          Toast.fire({
+            icon: 'error',
+            title: '請輸入姓名'
+          })
+          return
+        }
+
+        this.isProcessing = true
+
+        // form轉成formData，傳送到後端
+        const form = e.target
+        const formData = new FormData(form)
+        const { data } = await userAPI.update({ userId: this.profile.id, formData })
+
+        // 如果沒有更新成功就拋出error，否則轉址到個人頁
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        } else {
+          this.$router.push({ name: 'user-profile' })
+        }
+      } catch (e) {
+        this.isProcessing = false
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '送出失敗，請稍候再試'
+        })
       }
     }
   }

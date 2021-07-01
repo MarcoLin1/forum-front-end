@@ -16,7 +16,12 @@ export default {
   },
   data () {
     return {
-      profile: {}
+      profile: {
+        id: -1,
+        image: '',
+        name: '',
+        email: ''
+      }
     }
   },
   computed: {
@@ -24,21 +29,22 @@ export default {
   },
   watch: {
     // 因為currentUser透過非同步取得，所以一有變更就再呼叫一次setUser
-    currentUser (user) {
+    currentUser () {
       const { id } = this.$route.params
       this.setUser(id)
     }
   },
   created () {
     const { id } = this.$route.params
-    this.fetchUser(id)
+    this.setUser(id)
   },
   methods: {
     setUser (id) {
-      const { profile } = this.currentUser
+      const profile = this.currentUser
+
       // 如果currentUser id 和路由的id不同，就轉址到404
-      if (profile.id !== id) {
-        this.$route.push({ name: 'not-found' })
+      if (profile.id.toString() !== id.toString()) {
+        this.$router.push({ name: 'not-found' })
         return
       }
       this.profile = {
