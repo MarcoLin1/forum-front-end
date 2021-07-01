@@ -66,7 +66,7 @@
         v-else
         type="button"
         class="btn btn-primary like mr-2"
-        @click.stop.prevent="addLike"
+        @click.stop.prevent="addLike(restaurant.id)"
       >
         Like
       </button>
@@ -76,6 +76,8 @@
 
 <script>
 import { emptyImageFilter } from './../utils/mixin'
+import userAPI from './../apis/users'
+import { Toast } from './../utils/helper'
 export default {
   mixins: [emptyImageFilter],
   props: {
@@ -99,10 +101,22 @@ export default {
     }
   },
   methods: {
-    addLike () {
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: true
+    async addLike (restaurantId) {
+      try {
+        const { data } = await userAPI.addLike({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = {
+          ...this.restaurant,
+          isLiked: true
+        }
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '點擊Like失敗，請稍候再試'
+        })
       }
     },
     removeLike () {
