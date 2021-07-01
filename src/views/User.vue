@@ -81,11 +81,12 @@ export default {
     async fetchUser (userId) {
       try {
         const { data } = await userAPI.get({ userId })
-        const { id, name, email, Comments, FavoritedRestaurants, Followers, Followings } = data.profile
+        const { id, name, email, image, Comments, FavoritedRestaurants, Followers, Followings } = data.profile
         this.userProfile = {
           id,
           name,
           email,
+          image,
           commentLength: Comments.length,
           favoriteRestaurantLength: FavoritedRestaurants.length,
           followingLength: Followings.length,
