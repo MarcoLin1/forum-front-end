@@ -81,7 +81,6 @@ export default {
     async fetchUser (userId) {
       try {
         const { data } = await userAPI.get({ userId })
-        console.log(data)
         const { id, name, email, Comments, FavoritedRestaurants, Followers, Followings } = data.profile
         this.userProfile = {
           id,
@@ -92,7 +91,8 @@ export default {
           followingLength: Followings.length,
           followerLength: Followers.length
         }
-        this.comments = Comments
+        // 處理comment可能空值情況
+        this.comments = Comments.filter(comment => comment.Restaurant)
         this.favoritedRestaurants = FavoritedRestaurants
         this.followers = Followers
         this.followings = Followings
