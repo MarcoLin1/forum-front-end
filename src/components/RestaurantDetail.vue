@@ -42,7 +42,7 @@
         v-if="restaurant.isFavorited"
         type="button"
         class="btn btn-danger btn-border mr-2"
-        @click.stop.prevent="removeFavorite"
+        @click.stop.prevent="removeFavorite(restaurant.id)"
       >
         移除最愛
       </button>
@@ -155,10 +155,22 @@ export default {
         })
       }
     },
-    removeFavorite () {
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: false
+    async removeFavorite (restaurantId) {
+      try {
+        const { data } = await userAPI.deleteFavorite({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: false
+        }
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '移除最愛失敗，請稍候再試'
+        })
       }
     }
   }
