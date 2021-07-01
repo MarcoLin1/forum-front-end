@@ -1,12 +1,12 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <strong>{{ allFavoriteRestaurants.length }}</strong>
+      <strong>{{ favoritedRestaurants.length }}</strong>
       " 收藏的餐廳"
     </div>
     <div class="card-body">
       <router-link
-        v-for="favoriteRestaurant in allFavoriteRestaurants"
+        v-for="favoriteRestaurant in favoritedRestaurants"
         :key="favoriteRestaurant.id"
         :to="{name: 'restaurant', params: {id: favoriteRestaurant.id}}"
       >
@@ -29,19 +29,6 @@ export default {
     favoritedRestaurants: {
       type: Array,
       required: true
-    }
-  },
-  dara () {
-    return {
-      allFavoriteRestaurants: []
-    }
-  },
-  created () {
-    this.fetchFavoritedRestaurants()
-  },
-  methods: {
-    fetchFavoritedRestaurants () {
-      this.allFavoriteRestaurants = this.favoritedRestaurants
     }
   }
 }

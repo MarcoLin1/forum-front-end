@@ -1,12 +1,12 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <strong>{{ allComments.length }}</strong>
+      <strong>{{ comments.length }}</strong>
       " 已評論餐廳 "
     </div>
     <div class="card-body">
       <router-link
-        v-for="comment in allComments"
+        v-for="comment in comments"
         :key="comment.id"
         :to="{name: 'restaurant', params: {id: comment.id}}"
       >
@@ -29,11 +29,6 @@ export default {
     comments: {
       type: Array,
       required: true
-    }
-  },
-  data () {
-    return {
-      allComments: this.comments
     }
   }
 }

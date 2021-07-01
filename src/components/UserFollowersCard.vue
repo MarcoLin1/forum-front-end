@@ -1,17 +1,17 @@
 <template>
   <div class="card">
     <div class="card-header">
-      <strong>{{ follower.length }}</strong>
+      <strong>{{ followers.length }}</strong>
       " followers(追隨者)"
     </div>
     <div class="card-body">
       <router-link
-        v-for="follow in follower"
-        :key="follow.id"
-        :to="{name: 'user-profile', params: {id: follow.id}}"
+        v-for="follower in followers"
+        :key="follower.id"
+        :to="{name: 'user-profile', params: {id: follower.id}}"
       >
         <img
-          :src="follow.image | emptyImage"
+          :src="follower.image | emptyImage"
           alt=""
           style="width:60px; height:60px;"
           class="mr-2"
@@ -29,11 +29,6 @@ export default {
     followers: {
       type: Array,
       required: true
-    }
-  },
-  data () {
-    return {
-      follower: this.followers
     }
   }
 }
