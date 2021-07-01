@@ -50,7 +50,7 @@
         v-else
         type="button"
         class="btn btn-primary btn-border mr-2"
-        @click.stop.prevent="addFavorite"
+        @click.stop.prevent="addFavorite(restaurant.id)"
       >
         加到最愛
       </button>
@@ -137,10 +137,22 @@ export default {
         })
       }
     },
-    addFavorite () {
-      this.restaurant = {
-        ...this.restaurant,
-        isFavorited: true
+    async addFavorite (restaurantId) {
+      try {
+        const { data } = await userAPI.addFavorite({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = {
+          ...this.restaurant,
+          isFavorited: true
+        }
+      } catch (e) {
+        console.log(e)
+        Toast.fire({
+          icon: 'error',
+          title: '加入最愛失敗，請稍候再試'
+        })
       }
     },
     removeFavorite () {
