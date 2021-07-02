@@ -14,7 +14,8 @@ export default new Vuex.Store({
       image: '',
       isAdmin: false
     },
-    isAuthenticated: false
+    isAuthenticated: false,
+    token: ''
   },
   // 設定函式，用來修改state裡的資料
   mutations: {
@@ -29,12 +30,18 @@ export default new Vuex.Store({
         ...currentUser
       }
 
+      // 將使用者驗證用的token存在state中
+      state.token = localStorage.getItem('token')
+
       // 修改登入狀態為true
       state.isAuthenticated = true
     },
     revokeAuthentication (state) {
       state.currentUser = {}
       state.isAuthenticated = false
+
+      // 登出後清空存在state中的token
+      state.token = ''
       localStorage.removeItem('token')
     }
   },
@@ -58,6 +65,9 @@ export default new Vuex.Store({
       } catch (e) {
         console.log(e)
         console.error('Can not fetch user information')
+
+        // 驗證失敗一併觸發登出行為，清除state中的token
+        commit('revokeAuthentication')
         // 失敗的話回傳false，用於驗證登入權限
         return false
       }

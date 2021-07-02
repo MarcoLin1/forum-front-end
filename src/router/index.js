@@ -111,14 +111,15 @@ const router = new VueRouter({
 })
 
 router.beforeEach(async (to, from, next) => {
-  // 取出localStorage的token
-  const token = localStorage.getItem('token')
+  // 取出localStorage的token以及store中存取的token
+  const tokenInLocalStorage = localStorage.getItem('token')
+  const tokenInStore = store.state.token
 
-  // 預設尚未驗證
-  let isAuthenticated = false
+  // 取出store中存取的isAuthenticated狀態
+  let isAuthenticated = store.state.isAuthenticated
 
-  // 如果token有效，isAuthenticated就會是fetchCurrentUser回傳的true or false認定 (dispatch是呼叫 Vuex 中的actions)
-  if (token) {
+  // 如果localStorage token有效，並且比較localStorage和store中的token是否一樣，若不一樣才再驗證一次 (dispatch是呼叫 Vuex 中的actions)
+  if (tokenInLocalStorage && tokenInStore !== tokenInLocalStorage) {
     isAuthenticated = await store.dispatch('fetchCurrentUser')
   }
 
