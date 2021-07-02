@@ -53,9 +53,13 @@ export default new Vuex.Store({
           image: image,
           isAdmin: isAdmin
         })
+        // 成功之後回傳true，用於驗證登入權限
+        return true
       } catch (e) {
         console.log(e)
         console.error('Can not fetch user information')
+        // 失敗的話回傳false，用於驗證登入權限
+        return false
       }
     }
   },

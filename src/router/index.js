@@ -110,9 +110,31 @@ const router = new VueRouter({
   routes
 })
 
-router.beforeEach((to, from, next) => {
-  // 使用dispatch呼叫 Vuex 中的actions
-  store.dispatch('fetchCurrentUser')
+router.beforeEach(async (to, from, next) => {
+  // 取出localStorage的token
+  const token = localStorage.getItem('token')
+
+  // 預設尚未驗證
+  let isAuthenticated = false
+
+  // 如果token有效，isAuthenticated就會是fetchCurrentUser回傳的true or false認定 (dispatch是呼叫 Vuex 中的actions)
+  if (token) {
+    isAuthenticated = await store.dispatch('fetchCurrentUser')
+  }
+
+  // 不需要token驗證的頁面
+  const pathWithoutAuthenticated = ['sign-in', 'sign-up']
+
+  // 如果驗證無效，且要去的地方是要驗證的頁面，就轉到signin
+  if (!isAuthenticated && !pathWithoutAuthenticated.includes(to.name)) {
+    next('/signin')
+    return
+  }
+  // 如果驗證有效，且要去的地方是不用驗證的頁面，就轉到餐廳首頁
+  if (isAuthenticated && pathWithoutAuthenticated.includes(to.name)) {
+    next('/restaurants')
+    return
+  }
   next()
 })
 
