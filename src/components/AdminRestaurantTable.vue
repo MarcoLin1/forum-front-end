@@ -1,70 +1,80 @@
 <template>
-  <table class="table">
-    <thead class="thead-dark">
-      <tr>
-        <th scope="col">
-          #
-        </th>
-        <th scope="col">
-          Category
-        </th>
-        <th scope="col">
-          Name
-        </th>
-        <th
-          scope="col"
-          width="300"
-        >
-          操作
-        </th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr
-        v-for="restaurant in restaurants"
-        :key="restaurant.id"
-      >
-        <th scope="row">
-          {{ restaurant.id }}
-        </th>
-        <td>{{ restaurant.Category ? restaurant.Category.name : '未分類' }}</td>
-        <td>{{ restaurant.name }}</td>
-        <td class="d-flex justify-content-between">
-          <router-link
-            :to="{name: 'admin-restaurant', params: {id: restaurant.id}}"
-            class="btn btn-link"
+  <div class="container">
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <table class="table">
+        <thead class="thead-dark">
+          <tr>
+            <th scope="col">
+              #
+            </th>
+            <th scope="col">
+              Category
+            </th>
+            <th scope="col">
+              Name
+            </th>
+            <th
+              scope="col"
+              width="300"
+            >
+              操作
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            v-for="restaurant in restaurants"
+            :key="restaurant.id"
           >
-            Show
-          </router-link>
+            <th scope="row">
+              {{ restaurant.id }}
+            </th>
+            <td>{{ restaurant.Category ? restaurant.Category.name : '未分類' }}</td>
+            <td>{{ restaurant.name }}</td>
+            <td class="d-flex justify-content-between">
+              <router-link
+                :to="{name: 'admin-restaurant', params: {id: restaurant.id}}"
+                class="btn btn-link"
+              >
+                Show
+              </router-link>
 
-          <router-link
-            :to="{name: 'admin-restaurant-edit', params: {id: restaurant.id}}"
-            class="btn btn-link"
-          >
-            Edit
-          </router-link>
+              <router-link
+                :to="{name: 'admin-restaurant-edit', params: {id: restaurant.id}}"
+                class="btn btn-link"
+              >
+                Edit
+              </router-link>
 
-          <button
-            type="button"
-            class="btn btn-link"
-            @click.stop.prevent="deleteRestaurant(restaurant.id)"
-          >
-            Delete
-          </button>
-        </td>
-      </tr>
-    </tbody>
-  </table>
+              <button
+                type="button"
+                class="btn btn-link"
+                @click.stop.prevent="deleteRestaurant(restaurant.id)"
+              >
+                Delete
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </template>
+  </div>
 </template>
 
 <script>
+import Spinner from './../components/Spinner.vue'
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helper'
 
 export default {
+  components: {
+    Spinner: Spinner
+  },
   data () {
     return {
-      restaurants: []
+      restaurants: [],
+      isLoading: true
     }
   },
   created () {
@@ -76,12 +86,14 @@ export default {
         const { data } = await adminAPI.restaurants.get()
         console.log(data)
         this.restaurants = data.restaurants
+        this.isLoading = false
       } catch (e) {
         console.log(e)
         Toast.fore({
           icon: 'error',
           title: '資料讀取失敗，請稍候再試'
         })
+        this.isLoading = false
       }
     },
     async deleteRestaurant (restaurantId) {

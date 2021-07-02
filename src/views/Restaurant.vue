@@ -1,19 +1,22 @@
 <template>
   <div class="container py-5">
-    <h1>餐廳描述頁</h1>
-    <!-- 餐廳資訊頁 RestaurantDetail -->
-    <RestaurantDetail :initial-restaurant="restaurant" />
-    <hr>
-    <!-- 餐廳評論 RestaurantComments -->
-    <RestaurantComments
-      :restaurant-comments="restaurantComments"
-      @after-delete-comment="afterDeleteComment"
-    />
-    <!-- 新增評論 CreateComment -->
-    <CreateComment
-      :restaurant-id="restaurant.id"
-      @after-create-comment="afterCreateComment"
-    />
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <h1>餐廳描述頁</h1>
+      <!-- 餐廳資訊頁 RestaurantDetail -->
+      <RestaurantDetail :initial-restaurant="restaurant" />
+      <hr>
+      <!-- 餐廳評論 RestaurantComments -->
+      <RestaurantComments
+        :restaurant-comments="restaurantComments"
+        @after-delete-comment="afterDeleteComment"
+      />
+      <!-- 新增評論 CreateComment -->
+      <CreateComment
+        :restaurant-id="restaurant.id"
+        @after-create-comment="afterCreateComment"
+      />
+    </template>
   </div>
 </template>
 
@@ -21,6 +24,7 @@
 import RestaurantDetail from './../components/RestaurantDetail.vue'
 import RestaurantComments from './../components/RestaurantComments.vue'
 import CreateComment from './../components/CreateComment.vue'
+import Spinner from './../components/Spinner.vue'
 import restaurantsAPI from './../apis/restaurants'
 import { Toast } from './../utils/helper'
 import { mapState } from 'vuex'
@@ -30,7 +34,8 @@ export default {
   components: {
     RestaurantDetail: RestaurantDetail,
     RestaurantComments: RestaurantComments,
-    CreateComment: CreateComment
+    CreateComment: CreateComment,
+    Spinner: Spinner
   },
   data () {
     return {
@@ -46,7 +51,8 @@ export default {
         isFavorited: false,
         isLiked: false
       },
-      restaurantComments: []
+      restaurantComments: [],
+      isLoading: true
     }
   },
   // 取得vuex中currentUser的資料
@@ -66,6 +72,7 @@ export default {
   methods: {
     async fetchRestaurant (restaurantId) {
       try {
+        this.isLoading = true
         const { data } = await restaurantsAPI.getRestaurant({ restaurantId })
         const { restaurant, isFavorited, isLiked } = data
         const { id, name, tel, address, opening_hours: openingHours, description, image, Category } = restaurant
@@ -82,12 +89,14 @@ export default {
           isLiked: isLiked
         }
         this.restaurantComments = data.restaurant.Comments
+        this.isLoading = false
       } catch (e) {
         console.log(e)
         Toast.fire({
           icon: 'error',
           title: '餐廳資料讀取失敗，請稍候再試'
         })
+        this.isLoading = false
       }
     },
     afterDeleteComment (commentId) {

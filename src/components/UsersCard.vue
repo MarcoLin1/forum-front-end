@@ -1,50 +1,60 @@
 <template>
-  <div class="row text-center">
-    <div
-      v-for="user in users"
-      :key="user.id"
-      class="col-3"
-    >
-      <a href="#">
-        <img
-          :src="user.image | emptyImage"
-          width="140px"
-          height="140px"
+  <div class="container">
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <div class="row text-center">
+        <div
+          v-for="user in users"
+          :key="user.id"
+          class="col-3"
         >
-      </a>
-      <h2>{{ user.name }}</h2>
-      <span class="badge badge-secondary">追蹤人數：{{ user.followerCount }}</span>
-      <p class="mt-3">
-        <button
-          v-if="user.isFollowed"
-          type="button"
-          class="btn btn-danger"
-          @click.stop.prevent="deleteFollowing(user.id)"
-        >
-          取消追蹤
-        </button>
-        <button
-          v-else
-          type="button"
-          class="btn btn-primary"
-          @click.stop.prevent="addFollowing(user.id)"
-        >
-          追蹤
-        </button>
-      </p>
-    </div>
+          <a href="#">
+            <img
+              :src="user.image | emptyImage"
+              width="140px"
+              height="140px"
+            >
+          </a>
+          <h2>{{ user.name }}</h2>
+          <span class="badge badge-secondary">追蹤人數：{{ user.followerCount }}</span>
+          <p class="mt-3">
+            <button
+              v-if="user.isFollowed"
+              type="button"
+              class="btn btn-danger"
+              @click.stop.prevent="deleteFollowing(user.id)"
+            >
+              取消追蹤
+            </button>
+            <button
+              v-else
+              type="button"
+              class="btn btn-primary"
+              @click.stop.prevent="addFollowing(user.id)"
+            >
+              追蹤
+            </button>
+          </p>
+        </div>
+      </div>
+    </template>
   </div>
 </template>
 
 <script>
+import Spinner from './../components/Spinner.vue'
 import { emptyImageFilter } from './../utils/mixin'
 import userAPI from './../apis/users'
 import { Toast } from './../utils/helper'
 export default {
+  components: {
+    Spinner: Spinner
+  },
   mixins: [emptyImageFilter],
   data () {
     return {
-      users: []
+      users: [],
+      isLoading: true
     }
   },
   created () {
@@ -53,6 +63,7 @@ export default {
   methods: {
     async fetchUser () {
       try {
+        this.isLoading = true
         const { data } = await userAPI.getTopUsers()
         this.users = data.users.map(user => ({
           id: user.id,
@@ -61,12 +72,14 @@ export default {
           followerCount: user.FollowerCount,
           isFollowed: user.isFollowed
         }))
+        this.isLoading = false
       } catch (e) {
         console.log(e)
         Toast.fire({
           icon: 'error',
           title: '讀取失敗，請稍候再試'
         })
+        this.isLoading = false
       }
     },
     async addFollowing (userId) {
